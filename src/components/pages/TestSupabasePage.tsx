@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Database, CheckCircle, AlertTriangle, RefreshCw, Users, Package, Building2, Heart, Shield, Activity, Eye, Edit, Phone } from 'lucide-react';
+import { Database, CheckCircle, AlertTriangle, RefreshCw, Users, Package, Building2, Heart, Shield, Activity, Eye, Edit, Phone, PlayCircle } from 'lucide-react';
 import { statisticsService } from '../../services/supabaseService';
 import { mockBeneficiaries, mockOrganizations, mockFamilies, mockPackages, mockTasks, mockAlerts, mockRoles, mockSystemUsers, calculateStats } from '../../data/mockData';
 import SupabaseConnectionStatus from '../SupabaseConnectionStatus';
+import { seedMockData } from '../../scripts/seedMockData';
 
 export default function TestSupabasePage() {
   const [stats, setStats] = useState<any>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsError, setStatsError] = useState<string | null>(null);
+  const [seeding, setSeeding] = useState(false);
+  const [seedResult, setSeedResult] = useState<string | null>(null);
 
   // استخدام البيانات الوهمية مباشرة
   const beneficiaries = mockBeneficiaries;
@@ -49,6 +52,20 @@ export default function TestSupabasePage() {
     fetchStats();
   }, []);
 
+  const handleSeedData = async () => {
+    try {
+      setSeeding(true);
+      setSeedResult(null);
+      await seedMockData();
+      setSeedResult('تم إضافة البيانات بنجاح! ✅');
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (error: any) {
+      setSeedResult(`خطأ: ${error.message}`);
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Connection Status */}
@@ -58,23 +75,45 @@ export default function TestSupabasePage() {
             <Database className="w-6 h-6 ml-2 text-blue-600" />
             حالة النظام
           </h3>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center"
-          >
-            <RefreshCw className="w-4 h-4 ml-2" />
-            تحديث البيانات
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleSeedData}
+              disabled={seeding}
+              className="bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-green-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {seeding ? <RefreshCw className="w-4 h-4 ml-2 animate-spin" /> : <PlayCircle className="w-4 h-4 ml-2" />}
+              {seeding ? 'جاري الإضافة...' : 'إضافة البيانات الوهمية'}
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center"
+            >
+              <RefreshCw className="w-4 h-4 ml-2" />
+              تحديث البيانات
+            </button>
+          </div>
         </div>
+
+        {seedResult && (
+          <div className={`mb-4 p-4 rounded-xl ${seedResult.includes('خطأ') ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'}`}>
+            <p className={seedResult.includes('خطأ') ? 'text-red-700' : 'text-green-700'}>{seedResult}</p>
+          </div>
+        )}
         
         <SupabaseConnectionStatus showDetails={true} />
-        
-        <div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+
+        <div className="mt-4 bg-green-50 border border-green-200 rounded-xl p-4">
           <div className="flex items-center space-x-2 space-x-reverse">
-            <CheckCircle className="w-5 h-5 text-blue-600" />
-            <span className="font-medium text-blue-800">النظام يعمل بالبيانات الوهمية بشكل كامل</span>
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            <span className="font-medium text-green-800">البيانات الجديدة المحدثة جاهزة!</span>
           </div>
-          <p className="text-blue-700 mt-2 text-sm">جميع الواجهات ولوحات التحكم تستخدم البيانات الوهمية للتطوير</p>
+          <ul className="text-green-700 mt-2 text-sm list-disc list-inside space-y-1">
+            <li>18 مستفيد متنوع (موثقين، قيد المراجعة، مرفوضين)</li>
+            <li>5 عائلات مع أفراد مرتبطين</li>
+            <li>طرود وتقييمات متنوعة لكل مستفيد</li>
+            <li>جهات اتصال طارئة لكل مستفيد موثق</li>
+          </ul>
+          <p className="text-green-700 mt-2 text-sm font-medium">اضغط على زر "إضافة البيانات الوهمية" أعلاه لإضافة البيانات إلى قاعدة البيانات</p>
         </div>
       </div>
 
