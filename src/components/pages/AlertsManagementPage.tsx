@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Bell, Search, Filter, Plus, Eye, Trash2, CheckCircle, AlertTriangle, Clock, Users, Package, Download, RefreshCw, X, Star, TrendingUp, Activity, Shield, MessageSquare } from 'lucide-react';
-import { useAlerts } from '../../context/AlertsContext';
-import { mockBeneficiaries, mockPackages, mockTasks, type Alert } from '../../data/mockData';
+import { useAlerts as useAlertsContext } from '../../context/AlertsContext';
+import type { Database } from '../../types/database';
+
+type Alert = Database['public']['Tables']['alerts']['Row'];
 import { useErrorLogger } from '../../utils/errorLogger';
 import { Button, Card, Input, Badge, Modal } from '../ui';
 

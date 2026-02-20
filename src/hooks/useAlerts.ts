@@ -8,8 +8,8 @@ type AlertInsert = Database['public']['Tables']['alerts']['Insert'];
 type AlertUpdate = Database['public']['Tables']['alerts']['Update'];
 
 interface UseAlertsOptions {
-  status?: string;
-  severity?: string;
+  isRead?: boolean;
+  priority?: string;
   type?: string;
 }
 
@@ -27,12 +27,12 @@ export const useAlerts = (options: UseAlertsOptions = {}) => {
       const data = await alertsService.getAll();
       let filtered = data;
 
-      if (options.status) {
-        filtered = filtered.filter(a => a.status === options.status);
+      if (options.isRead !== undefined) {
+        filtered = filtered.filter(a => a.is_read === options.isRead);
       }
 
-      if (options.severity) {
-        filtered = filtered.filter(a => a.severity === options.severity);
+      if (options.priority) {
+        filtered = filtered.filter(a => a.priority === options.priority);
       }
 
       if (options.type) {
@@ -52,7 +52,7 @@ export const useAlerts = (options: UseAlertsOptions = {}) => {
 
   useEffect(() => {
     fetchAlerts();
-  }, [options.status, options.severity, options.type]);
+  }, [options.isRead, options.priority, options.type]);
 
   const addAlert = async (alertData: AlertInsert) => {
     try {
@@ -115,11 +115,7 @@ export const useAlerts = (options: UseAlertsOptions = {}) => {
   };
 
   const markAsRead = async (id: string) => {
-    return await updateAlert(id, { status: 'read' });
-  };
-
-  const markAsResolved = async (id: string) => {
-    return await updateAlert(id, { status: 'resolved' });
+    return await updateAlert(id, { is_read: true });
   };
 
   const refetch = () => {
@@ -134,7 +130,6 @@ export const useAlerts = (options: UseAlertsOptions = {}) => {
     updateAlert,
     deleteAlert,
     markAsRead,
-    markAsResolved,
     refetch
   };
 };

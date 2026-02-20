@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Search, Plus, Eye, Edit, Phone, MapPin, Users, Package, TrendingUp, RefreshCw, UserCheck, Baby, Activity, Calendar } from 'lucide-react';
-import { type Family, type Beneficiary } from '../../data/mockData';
+import type { Database } from '../../types/database';
+
+type Family = Database['public']['Tables']['families']['Row'];
+type Beneficiary = Database['public']['Tables']['beneficiaries']['Row'];
 import { useErrorLogger } from '../../utils/errorLogger';
 import { Button, Card, Badge, Modal, Input } from '../ui';
 import { familiesService, beneficiariesService } from '../../services/supabaseService';

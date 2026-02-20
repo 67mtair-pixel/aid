@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Truck, Search, Filter, Plus, Eye, Edit, Phone, Mail, Star, MapPin, Clock, CheckCircle, AlertTriangle, RefreshCw, Award, TrendingUp, BarChart3 } from 'lucide-react';
-import { type Courier } from '../../data/mockData';
+import type { Database } from '../../types/database';
+
+type Courier = Database['public']['Tables']['couriers']['Row'];
 import { useErrorLogger } from '../../utils/errorLogger';
 import { Button, Card, Badge, Modal, Input } from '../ui';
 import { couriersService } from '../../services/supabaseService';

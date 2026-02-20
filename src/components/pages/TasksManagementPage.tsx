@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Clock, Truck, Users, MapPin, CheckCircle, AlertTriangle, Calendar, Search, Filter, Plus, Eye, Edit, Phone, RefreshCw, Download, Star, Package, User, Activity, TrendingUp, BarChart3 } from 'lucide-react';
-import { 
-  mockTasks, 
-  mockBeneficiaries, 
-  mockPackages, 
-  mockCouriers,
-  type Task, 
-  type Beneficiary, 
-  type Package as PackageType, 
-  type Courier 
-} from '../../data/mockData';
+import type { Database } from '../../types/database';
 import { useErrorLogger } from '../../utils/errorLogger';
+import { useTasks } from '../../hooks/useTasks';
+import { useBeneficiaries } from '../../hooks/useBeneficiaries';
+import { usePackages } from '../../hooks/usePackages';
+import { useCouriers } from '../../hooks/useCouriers';
 import { Button, Card, Input, Badge, Modal } from '../ui';
+
+type Task = Database['public']['Tables']['tasks']['Row'];
+type Beneficiary = Database['public']['Tables']['beneficiaries']['Row'];
+type PackageType = Database['public']['Tables']['packages']['Row'];
+type Courier = Database['public']['Tables']['couriers']['Row'];
 
 export default function TasksManagementPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,11 +24,10 @@ export default function TasksManagementPage() {
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
   const { logInfo, logError } = useErrorLogger();
 
-  // استخدام البيانات الوهمية مباشرة
-  const [tasks, setTasks] = useState<Task[]>(mockTasks);
-  const beneficiaries = mockBeneficiaries;
-  const packages = mockPackages;
-  const couriers = mockCouriers;
+  const { tasks, loading: tasksLoading, refetch: refetchTasks } = useTasks();
+  const { allBeneficiaries: beneficiaries } = useBeneficiaries();
+  const { packages } = usePackages();
+  const { allCouriers: couriers } = useCouriers();
 
   // Form states for modals
   const [assignForm, setAssignForm] = useState({
@@ -46,50 +45,49 @@ export default function TasksManagementPage() {
 
   const regions = ['شمال غزة', 'مدينة غزة', 'الوسط', 'خان يونس', 'رفح'];
 
-  // فلترة المهام
-  const filteredTasks = tasks.filter(task => {
-    const beneficiary = beneficiaries.find(b => b.id === task.beneficiaryId);
-    const packageInfo = packages.find(p => p.id === task.packageId);
-    const courier = task.courierId ? couriers.find(c => c.id === task.courierId) : null;
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(task => {
+      const beneficiary = beneficiaries.find(b => b.id === task.beneficiary_id);
+      const packageInfo = packages.find(p => p.id === task.package_id);
+      const courier = task.courier_id ? couriers.find(c => c.id === task.courier_id) : null;
 
-    // فلترة البحث
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase();
-      const matchesBeneficiary = beneficiary?.name.toLowerCase().includes(searchLower) || 
-                                beneficiary?.nationalId.includes(searchTerm) ||
-                                beneficiary?.phone.includes(searchTerm);
-      const matchesPackage = packageInfo?.name.toLowerCase().includes(searchLower);
-      const matchesCourier = courier?.name.toLowerCase().includes(searchLower);
-      
-      if (!matchesBeneficiary && !matchesPackage && !matchesCourier) {
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        const matchesBeneficiary = beneficiary?.name?.toLowerCase().includes(searchLower) ||
+                                  beneficiary?.national_id?.includes(searchTerm) ||
+                                  beneficiary?.phone?.includes(searchTerm);
+        const matchesPackage = packageInfo?.name?.toLowerCase().includes(searchLower);
+        const matchesCourier = courier?.name?.toLowerCase().includes(searchLower);
+
+        if (!matchesBeneficiary && !matchesPackage && !matchesCourier) {
+          return false;
+        }
+      }
+
+      if (statusFilter !== 'all' && task.status !== statusFilter) {
         return false;
       }
-    }
 
-    // فلترة الحالة
-    if (statusFilter !== 'all' && task.status !== statusFilter) {
-      return false;
-    }
-
-    // فلترة المندوب
-    if (courierFilter !== 'all') {
-      if (courierFilter === 'unassigned' && task.courierId) {
-        return false;
-      }
-      if (courierFilter !== 'unassigned' && task.courierId !== courierFilter) {
-        return false;
+      if (courierFilter !== 'all') {
+        if (courierFilter === 'unassigned' && task.courier_id) {
+          return false;
+        }
+        if (courierFilter !== 'unassigned' && task.courier_id !== courierFilter) {
+          return false;
       }
     }
 
     // فلترة المنطقة
     if (regionFilter !== 'all' && beneficiary) {
-      if (!beneficiary.detailedAddress?.governorate?.includes(regionFilter)) {
+      const address = beneficiary.detailed_address as any;
+      if (!address?.governorate?.includes(regionFilter)) {
         return false;
       }
     }
 
     return true;
-  });
+    });
+  }, [tasks, beneficiaries, packages, couriers, searchTerm, statusFilter, courierFilter, regionFilter]);
 
   // إحصائيات
   const statistics = {

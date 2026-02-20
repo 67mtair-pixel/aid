@@ -1,14 +1,19 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { type Alert, mockAlerts } from '../data/mockData';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
+import type { Database } from '../types/database';
+import { alertsService } from '../services/supabaseService';
+
+type Alert = Database['public']['Tables']['alerts']['Row'];
+type AlertInsert = Database['public']['Tables']['alerts']['Insert'];
 
 interface AlertsContextType {
   alerts: Alert[];
   unreadAlerts: Alert[];
   criticalAlerts: Alert[];
-  addAlert: (alert: Omit<Alert, 'id' | 'createdAt'>) => void;
-  markAsRead: (alertId: string) => void;
-  removeAlert: (alertId: string) => void;
-  clearAllAlerts: () => void;
+  addAlert: (alert: AlertInsert) => Promise<void>;
+  markAsRead: (alertId: string) => Promise<void>;
+  removeAlert: (alertId: string) => Promise<void>;
+  clearAllAlerts: () => Promise<void>;
+  refetch: () => Promise<void>;
 }
 
 const AlertsContext = createContext<AlertsContextType | undefined>(undefined);
@@ -26,36 +31,75 @@ interface AlertsProviderProps {
 }
 
 export const AlertsProvider: React.FC<AlertsProviderProps> = ({ children }) => {
-  const [alerts, setAlerts] = useState<Alert[]>(mockAlerts);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
 
-  const unreadAlerts = alerts.filter(alert => !alert.isRead);
-  const criticalAlerts = alerts.filter(alert => alert.priority === 'critical' && !alert.isRead);
-
-  const addAlert = (alertData: Omit<Alert, 'id' | 'createdAt'>) => {
-    const newAlert: Alert = {
-      ...alertData,
-      id: `alert-${Date.now()}`,
-      createdAt: new Date().toISOString()
-    };
-    setAlerts(prev => [newAlert, ...prev]);
+  const fetchAlerts = async () => {
+    try {
+      const data = await alertsService.getAll();
+      setAlerts(data);
+    } catch (error) {
+      console.error('Failed to fetch alerts:', error);
+    }
   };
 
-  const markAsRead = (alertId: string) => {
-    setAlerts(prev => 
-      prev.map(alert => 
-        alert.id === alertId 
-          ? { ...alert, isRead: true }
-          : alert
-      )
-    );
+  useEffect(() => {
+    fetchAlerts();
+  }, []);
+
+  const unreadAlerts = useMemo(() =>
+    alerts.filter(alert => !alert.is_read),
+    [alerts]
+  );
+
+  const criticalAlerts = useMemo(() =>
+    alerts.filter(alert => alert.priority === 'critical' && !alert.is_read),
+    [alerts]
+  );
+
+  const addAlert = async (alertData: AlertInsert) => {
+    try {
+      const newAlert = await alertsService.create(alertData);
+      if (newAlert) {
+        setAlerts(prev => [newAlert, ...prev]);
+      }
+    } catch (error) {
+      console.error('Failed to add alert:', error);
+    }
   };
 
-  const removeAlert = (alertId: string) => {
-    setAlerts(prev => prev.filter(alert => alert.id !== alertId));
+  const markAsRead = async (alertId: string) => {
+    try {
+      await alertsService.update(alertId, { is_read: true });
+      setAlerts(prev =>
+        prev.map(alert =>
+          alert.id === alertId
+            ? { ...alert, is_read: true }
+            : alert
+        )
+      );
+    } catch (error) {
+      console.error('Failed to mark alert as read:', error);
+    }
   };
 
-  const clearAllAlerts = () => {
-    setAlerts([]);
+  const removeAlert = async (alertId: string) => {
+    try {
+      await alertsService.delete(alertId);
+      setAlerts(prev => prev.filter(alert => alert.id !== alertId));
+    } catch (error) {
+      console.error('Failed to remove alert:', error);
+    }
+  };
+
+  const clearAllAlerts = async () => {
+    try {
+      for (const alert of alerts) {
+        await alertsService.delete(alert.id);
+      }
+      setAlerts([]);
+    } catch (error) {
+      console.error('Failed to clear alerts:', error);
+    }
   };
 
   const value = {
@@ -65,7 +109,8 @@ export const AlertsProvider: React.FC<AlertsProviderProps> = ({ children }) => {
     addAlert,
     markAsRead,
     removeAlert,
-    clearAllAlerts
+    clearAllAlerts,
+    refetch: fetchAlerts
   };
 
   return (

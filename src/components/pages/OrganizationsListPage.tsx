@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Building2, Search, Filter, Plus, Eye, Edit, Phone, Mail, CheckCircle, Clock, AlertTriangle, Users, Package, Star, TrendingUp, Download, MapPin, Calendar, RefreshCw } from 'lucide-react';
-import { type Organization } from '../../data/mockData';
+import type { Database } from '../../types/database';
+
+type Organization = Database['public']['Tables']['organizations']['Row'];
 import { useErrorLogger } from '../../utils/errorLogger';
 import { Button } from '../ui';
 import { organizationsService } from '../../services/supabaseService';

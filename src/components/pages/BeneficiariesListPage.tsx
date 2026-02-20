@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Users, Search, Filter, Plus, Eye, Edit, Phone, MessageSquare, CheckCircle, Clock, AlertTriangle, Shield, UserCheck, Download, Star, UserPlus } from 'lucide-react';
-import { type Beneficiary, type SystemUser } from '../../data/mockData';
+import type { Database } from '../../types/database';
+
+type Beneficiary = Database['public']['Tables']['beneficiaries']['Row'];
+type SystemUser = Database['public']['Tables']['system_users']['Row'];
 import { useBeneficiaries } from '../../hooks/useBeneficiaries';
 import { useAuth } from '../../context/AuthContext';
 import BeneficiaryProfileModal from '../BeneficiaryProfileModal';

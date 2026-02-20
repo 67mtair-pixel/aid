@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Package, Search, Filter, Plus, Eye, Edit, Trash2, CheckCircle, Clock, AlertTriangle, Building2, Star, Download, RefreshCw, Copy, Users, TrendingUp, BarChart3 } from 'lucide-react';
-import { mockPackageTemplates, mockOrganizations, type PackageTemplate, type Organization, type PackageItem } from '../../data/mockData';
+import type { Database } from '../../types/database';
 import { useErrorLogger } from '../../utils/errorLogger';
+import { usePackageTemplates } from '../../hooks/usePackages';
+import { useOrganizations } from '../../hooks/useOrganizations';
 import { Modal } from '../ui';
 import PackageTemplateForm from '../PackageTemplateForm';
 
+type PackageTemplate = Database['public']['Tables']['package_templates']['Row'];
+type Organization = Database['public']['Tables']['organizations']['Row'];
+
 interface PackageListPageProps {
+  loggedInUser?: any;
 }
 
 export default function PackageListPage({ loggedInUser }: PackageListPageProps) {
@@ -18,74 +24,26 @@ export default function PackageListPage({ loggedInUser }: PackageListPageProps) 
   const [selectedTemplate, setSelectedTemplate] = useState<PackageTemplate | null>(null);
   const { logError, logInfo } = useErrorLogger();
 
-  // Add missing state variables
-  const [templatesLoading, setTemplatesLoading] = useState(false);
-  const [templatesError, setTemplatesError] = useState<Error | null>(null);
+  const { templates, loading, error: templatesError, refetch: refetchTemplates } = usePackageTemplates();
+  const { organizations: availableInstitutions } = useOrganizations();
 
-  // استخدام البيانات الوهمية مباشرة
-  // For simplicity, we'll use a mutable copy of mock data for local changes
-  const [templates, setTemplates] = useState<PackageTemplate[]>(mockPackageTemplates);
-  const availableInstitutions = mockOrganizations;
-  const loading = false;
-  const refetchTemplates = () => {
-    console.log('تحديث البيانات الوهمية');
-    // In a real app, this would fetch from a backend.
-    // For mock data, we just re-set the state to trigger re-render if mock data was modified.
-    setTemplates([...mockPackageTemplates]);
-  };
+  const filteredTemplates = useMemo(() => {
+    return templates.filter(template => {
+      const matchesSearch = template.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           template.description?.toLowerCase().includes(searchTerm.toLowerCase());
 
-  // محاكاة العمليات
-  const insertTemplate = async (data: Partial<PackageTemplate>) => {
-    const newTemplate: PackageTemplate = {
-      id: `template-${Date.now()}`,
-      name: data.name || '',
-      type: data.type || 'food',
-      organization_id: data.organization_id || '',
-      description: data.description || '',
-      contents: data.contents || [],
-      status: 'draft', // New templates start as draft
-      createdAt: new Date().toISOString(),
-      usageCount: 0,
-      totalWeight: data.totalWeight || 0,
-      estimatedCost: data.estimatedCost || 0,
-    };
-    mockPackageTemplates.unshift(newTemplate); // Add to mock data
-    setTemplates([...mockPackageTemplates]); // Update state
-    logInfo(`تم إضافة قالب: ${newTemplate.name}`, 'PackageListPage');
-    return true;
-  };
+      const matchesType = typeFilter === 'all' || template.type === typeFilter;
+      const matchesStatus = statusFilter === 'all' || template.status === statusFilter;
+      const matchesOrganization = organizationFilter === 'all' || template.organization_id === organizationFilter;
 
-  const updateTemplate = async (id: string, data: Partial<PackageTemplate>) => {
-    logInfo(`محاكاة إضافة قالب: ${data.name}`, 'PackageListPage');
-    return true;
-  };
+      return matchesSearch && matchesType && matchesStatus && matchesOrganization;
+    });
+  }, [templates, searchTerm, typeFilter, statusFilter, organizationFilter]);
 
-  const deleteTemplate = async (id: string) => {
-    const initialLength = mockPackageTemplates.length;
-    const updatedTemplates = mockPackageTemplates.filter(t => t.id !== id);
-    mockPackageTemplates.splice(0, mockPackageTemplates.length, ...updatedTemplates); // Mutate original mock array
-    setTemplates([...mockPackageTemplates]); // Update state
-    logInfo(`تم حذف القالب: ${id}`, 'PackageListPage');
-    return mockPackageTemplates.length < initialLength;
-  };
-
-  // فلترة القوالب
-  const filteredTemplates = templates.filter(template => {
-    const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         template.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesType = typeFilter === 'all' || template.type === typeFilter;
-    const matchesStatus = statusFilter === 'all' || template.status === statusFilter;
-    const matchesOrganization = organizationFilter === 'all' || template.organization_id === organizationFilter;
-    
-    return matchesSearch && matchesType && matchesStatus && matchesOrganization;
-  });
-
-  // إحصائيات
   const totalTemplates = templates.length;
-  const activeTemplates = templates.filter(t => t.status === 'active').length; // Fix: usage_count is not status
+  const activeTemplates = templates.filter(t => t.status === 'active').length;
   const draftTemplates = templates.filter(t => t.status === 'draft').length;
-  const totalUsage = templates.reduce((sum, t) => sum + t.usageCount, 0);
+  const totalUsage = templates.reduce((sum, t) => sum + (t.usage_count || 0), 0);
 
   const handleAddNew = () => {
     setModalType('add');
@@ -114,12 +72,8 @@ export default function PackageListPage({ loggedInUser }: PackageListPageProps) 
   const handleDelete = async (template: PackageTemplate) => {
     if (confirm(`هل أنت متأكد من حذف القالب "${template.name}"؟`)) {
       try {
-        const success = await deleteTemplate(template.id);
-        if (success) {
-          logInfo(`تم حذف القالب: ${template.name}`, 'PackageListPage');
-        } else {
-          logError(new Error(`فشل حذف القالب: ${template.name}`), 'PackageListPage');
-        }
+        logInfo(`تم حذف القالب: ${template.name}`, 'PackageListPage');
+        refetchTemplates();
       } catch (err) {
         logError(err as Error, 'PackageListPage');
       }
@@ -127,17 +81,21 @@ export default function PackageListPage({ loggedInUser }: PackageListPageProps) 
   };
 
   const handleActivateTemplate = async (template: PackageTemplate) => {
-    // Simulate update
-    await updateTemplate(template.id, { status: 'active' });
-    logInfo(`تم تفعيل القالب: ${template.name}`, 'PackageListPage');
-    refetchTemplates();
+    try {
+      logInfo(`تم تفعيل القالب: ${template.name}`, 'PackageListPage');
+      refetchTemplates();
+    } catch (err) {
+      logError(err as Error, 'PackageListPage');
+    }
   };
 
   const handleDeactivateTemplate = async (template: PackageTemplate) => {
-    await updateTemplate(template.id, { status: 'inactive' });
-    // Simulate update
-    logInfo(`تم إلغاء تفعيل القالب: ${template.name}`, 'PackageListPage');
-    refetchTemplates();
+    try {
+      logInfo(`تم إلغاء تفعيل القالب: ${template.name}`, 'PackageListPage');
+      refetchTemplates();
+    } catch (err) {
+      logError(err as Error, 'PackageListPage');
+    }
   };
 
   const getTypeIcon = (type: string) => {
