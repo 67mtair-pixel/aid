@@ -189,14 +189,16 @@ async function seedBeneficiaries() {
   if (!organizations || !families) return;
 
   const beneficiaries = [
+    // عائلة أبو محمد - 3 أفراد (موثقين ونشطين)
     {
-      name: 'محمد أحمد الشرقاوي',
-      full_name: 'محمد أحمد عبد الله الشرقاوي',
+      name: 'محمد أحمد أبو محمد',
+      full_name: 'محمد أحمد عبد الله أبو محمد',
       national_id: '900123456',
       date_of_birth: '1990-05-15',
       gender: 'male',
       phone: '+970599111222',
-      address: 'حي الشجاعية، شارع الوحدة، بناية 5',
+      alternate_phone: '+970599111223',
+      address: 'حي الشجاعية، شارع الوحدة، بناية 5، شقة 3',
       location: { lat: 31.5234, lng: 34.4512 },
       organization_id: organizations[0].id,
       family_id: families[0].id,
@@ -211,19 +213,19 @@ async function seedBeneficiaries() {
       medical_conditions: ['ضغط الدم', 'السكري']
     },
     {
-      name: 'فاطمة خالد السعدي',
-      full_name: 'فاطمة خالد محمود السعدي',
-      national_id: '850234567',
-      date_of_birth: '1985-08-22',
+      name: 'فاطمة خالد أبو محمد',
+      full_name: 'فاطمة خالد محمود أبو محمد',
+      national_id: '920234567',
+      date_of_birth: '1992-08-22',
       gender: 'female',
-      phone: '+970599222333',
-      address: 'حي الزيتون، شارع الجلاء، بناية 12',
-      location: { lat: 31.5156, lng: 34.4623 },
-      organization_id: organizations[1].id,
-      family_id: families[1].id,
+      phone: '+970599111224',
+      address: 'حي الشجاعية، شارع الوحدة، بناية 5، شقة 3',
+      location: { lat: 31.5234, lng: 34.4512 },
+      organization_id: organizations[0].id,
+      family_id: families[0].id,
       marital_status: 'married',
-      economic_level: 'very_poor',
-      members_count: 6,
+      economic_level: 'poor',
+      members_count: 8,
       identity_status: 'verified',
       status: 'active',
       eligibility_status: 'eligible',
@@ -232,13 +234,81 @@ async function seedBeneficiaries() {
       medical_conditions: []
     },
     {
+      name: 'أحمد محمد أبو محمد',
+      full_name: 'أحمد محمد أحمد أبو محمد',
+      national_id: '150345678',
+      date_of_birth: '2015-03-10',
+      gender: 'male',
+      phone: '+970599111222',
+      address: 'حي الشجاعية، شارع الوحدة، بناية 5، شقة 3',
+      location: { lat: 31.5234, lng: 34.4512 },
+      organization_id: organizations[0].id,
+      family_id: families[0].id,
+      marital_status: 'single',
+      economic_level: 'poor',
+      members_count: 8,
+      identity_status: 'verified',
+      status: 'active',
+      eligibility_status: 'eligible',
+      total_packages: 15,
+      is_head_of_family: false,
+      medical_conditions: []
+    },
+
+    // عائلة السعدي - 2 أفراد (قيد المراجعة)
+    {
+      name: 'خالد محمود السعدي',
+      full_name: 'خالد محمود حسن السعدي',
+      national_id: '850456789',
+      date_of_birth: '1985-11-18',
+      gender: 'male',
+      phone: '+970599222333',
+      address: 'حي الزيتون، شارع الجلاء، بناية 12',
+      location: { lat: 31.5156, lng: 34.4623 },
+      organization_id: organizations[1].id,
+      family_id: families[1].id,
+      marital_status: 'married',
+      economic_level: 'very_poor',
+      members_count: 6,
+      identity_status: 'pending',
+      status: 'pending',
+      eligibility_status: 'under_review',
+      total_packages: 8,
+      is_head_of_family: true,
+      medical_conditions: []
+    },
+    {
+      name: 'مريم علي السعدي',
+      full_name: 'مريم علي يوسف السعدي',
+      national_id: '880567890',
+      date_of_birth: '1988-07-25',
+      gender: 'female',
+      phone: '+970599222334',
+      address: 'حي الزيتون، شارع الجلاء، بناية 12',
+      location: { lat: 31.5156, lng: 34.4623 },
+      organization_id: organizations[1].id,
+      family_id: families[1].id,
+      marital_status: 'married',
+      economic_level: 'very_poor',
+      members_count: 6,
+      identity_status: 'pending',
+      status: 'active',
+      eligibility_status: 'under_review',
+      total_packages: 5,
+      is_head_of_family: false,
+      medical_conditions: []
+    },
+
+    // عائلة النجار - 4 أفراد (موثقين ونشطين)
+    {
       name: 'عبد الله حسن النجار',
       full_name: 'عبد الله حسن علي النجار',
-      national_id: '920345678',
-      date_of_birth: '1992-03-10',
+      national_id: '920678901',
+      date_of_birth: '1992-12-05',
       gender: 'male',
       phone: '+970599333444',
-      address: 'خان يونس، شارع الرشيد، بناية 8',
+      alternate_phone: '+970599333445',
+      address: 'خان يونس، شارع الرشيد، بناية 8، الطابق الثاني',
       location: { lat: 31.3469, lng: 34.3029 },
       organization_id: organizations[2].id,
       family_id: families[2].id,
@@ -253,60 +323,171 @@ async function seedBeneficiaries() {
       medical_conditions: ['أمراض قلب']
     },
     {
-      name: 'مريم يوسف الحلو',
-      full_name: 'مريم يوسف علي الحلو',
-      national_id: '880456789',
-      date_of_birth: '1988-11-18',
+      name: 'سارة محمد النجار',
+      full_name: 'سارة محمد أحمد النجار',
+      national_id: '930789012',
+      date_of_birth: '1993-04-30',
       gender: 'female',
+      phone: '+970599333446',
+      address: 'خان يونس، شارع الرشيد، بناية 8، الطابق الثاني',
+      location: { lat: 31.3469, lng: 34.3029 },
+      organization_id: organizations[2].id,
+      family_id: families[2].id,
+      marital_status: 'married',
+      economic_level: 'poor',
+      members_count: 10,
+      identity_status: 'verified',
+      status: 'active',
+      eligibility_status: 'eligible',
+      total_packages: 45,
+      is_head_of_family: false,
+      medical_conditions: ['ربو']
+    },
+    {
+      name: 'علي عبد الله النجار',
+      full_name: 'علي عبد الله حسن النجار',
+      national_id: '120890123',
+      date_of_birth: '2012-09-14',
+      gender: 'male',
+      phone: '+970599333444',
+      address: 'خان يونس، شارع الرشيد، بناية 8، الطابق الثاني',
+      location: { lat: 31.3469, lng: 34.3029 },
+      organization_id: organizations[2].id,
+      family_id: families[2].id,
+      marital_status: 'single',
+      economic_level: 'poor',
+      members_count: 10,
+      identity_status: 'verified',
+      status: 'active',
+      eligibility_status: 'eligible',
+      total_packages: 20,
+      is_head_of_family: false,
+      medical_conditions: []
+    },
+    {
+      name: 'ليلى عبد الله النجار',
+      full_name: 'ليلى عبد الله حسن النجار',
+      national_id: '140901234',
+      date_of_birth: '2014-06-20',
+      gender: 'female',
+      phone: '+970599333444',
+      address: 'خان يونس، شارع الرشيد، بناية 8، الطابق الثاني',
+      location: { lat: 31.3469, lng: 34.3029 },
+      organization_id: organizations[2].id,
+      family_id: families[2].id,
+      marital_status: 'single',
+      economic_level: 'poor',
+      members_count: 10,
+      identity_status: 'verified',
+      status: 'active',
+      eligibility_status: 'eligible',
+      total_packages: 18,
+      is_head_of_family: false,
+      medical_conditions: []
+    },
+
+    // عائلة الحلو - 2 أفراد (مرفوضين)
+    {
+      name: 'يوسف علي الحلو',
+      full_name: 'يوسف علي محمد الحلو',
+      national_id: '860012345',
+      date_of_birth: '1986-02-11',
+      gender: 'male',
       phone: '+970599444555',
       address: 'رفح، حي الشابورة، بناية 15',
       location: { lat: 31.2858, lng: 34.2456 },
       organization_id: organizations[3].id,
       family_id: families[3].id,
       marital_status: 'married',
-      economic_level: 'poor',
+      economic_level: 'moderate',
       members_count: 7,
-      identity_status: 'pending',
-      status: 'active',
-      eligibility_status: 'under_review',
-      total_packages: 41,
-      is_head_of_family: false,
+      identity_status: 'rejected',
+      status: 'suspended',
+      eligibility_status: 'rejected',
+      total_packages: 2,
+      is_head_of_family: true,
       medical_conditions: []
     },
     {
-      name: 'أحمد سعيد قديح',
-      full_name: 'أحمد سعيد محمود قديح',
-      national_id: '950567890',
-      date_of_birth: '1995-07-25',
+      name: 'نور يوسف الحلو',
+      full_name: 'نور يوسف علي الحلو',
+      national_id: '890123456',
+      date_of_birth: '1989-08-17',
+      gender: 'female',
+      phone: '+970599444556',
+      address: 'رفح، حي الشابورة، بناية 15',
+      location: { lat: 31.2858, lng: 34.2456 },
+      organization_id: organizations[3].id,
+      family_id: families[3].id,
+      marital_status: 'married',
+      economic_level: 'moderate',
+      members_count: 7,
+      identity_status: 'rejected',
+      status: 'suspended',
+      eligibility_status: 'rejected',
+      total_packages: 1,
+      is_head_of_family: false,
+      medical_conditions: []
+    },
+
+    // عائلة قديح - 2 أفراد (بيانات ناقصة)
+    {
+      name: 'محمود سعيد قديح',
+      full_name: 'محمود سعيد أحمد قديح',
+      national_id: '950234567',
+      date_of_birth: '1995-01-08',
       gender: 'male',
       phone: '+970599555666',
       address: 'جباليا، مخيم جباليا، بناية 22',
       location: { lat: 31.5392, lng: 34.4889 },
       organization_id: organizations[4].id,
       family_id: families[4].id,
-      marital_status: 'single',
-      economic_level: 'moderate',
-      members_count: 1,
-      identity_status: 'verified',
-      status: 'active',
-      eligibility_status: 'eligible',
-      total_packages: 12,
-      is_head_of_family: false,
+      marital_status: 'married',
+      economic_level: 'very_poor',
+      members_count: 9,
+      identity_status: 'pending',
+      status: 'pending',
+      eligibility_status: 'under_review',
+      total_packages: 3,
+      is_head_of_family: true,
       medical_conditions: []
     },
     {
-      name: 'سارة محمد العطار',
-      full_name: 'سارة محمد حسن العطار',
-      national_id: '910678901',
-      date_of_birth: '1991-12-05',
+      name: 'هناء خالد قديح',
+      full_name: 'هناء خالد محمود قديح',
+      national_id: '970345678',
+      date_of_birth: '1997-05-12',
       gender: 'female',
+      phone: '+970599555667',
+      address: 'جباليا، مخيم جباليا، بناية 22',
+      location: { lat: 31.5392, lng: 34.4889 },
+      family_id: families[4].id,
+      marital_status: 'married',
+      economic_level: 'very_poor',
+      members_count: 9,
+      identity_status: 'pending',
+      status: 'pending',
+      eligibility_status: 'under_review',
+      total_packages: 2,
+      is_head_of_family: false,
+      medical_conditions: []
+    },
+
+    // مستفيدين مستقلين - بدون عائلة
+    {
+      name: 'سامي محمد العطار',
+      full_name: 'سامي محمد حسن العطار',
+      national_id: '910456789',
+      date_of_birth: '1991-12-05',
+      gender: 'male',
       phone: '+970599666777',
-      address: 'حي الدرج، غزة، بناية 7',
+      alternate_phone: '+970599666778',
+      address: 'حي الرمال، غزة، شارع الجلاء، بناية 7',
       location: { lat: 31.5201, lng: 34.4515 },
       organization_id: organizations[0].id,
       marital_status: 'divorced',
       economic_level: 'very_poor',
-      members_count: 4,
+      members_count: 1,
       identity_status: 'verified',
       status: 'active',
       eligibility_status: 'eligible',
@@ -315,29 +496,29 @@ async function seedBeneficiaries() {
       medical_conditions: []
     },
     {
-      name: 'خالد عمر البطش',
-      full_name: 'خالد عمر أحمد البطش',
-      national_id: '870789012',
+      name: 'ليلى أحمد البطش',
+      full_name: 'ليلى أحمد عمر البطش',
+      national_id: '870567890',
       date_of_birth: '1987-04-30',
-      gender: 'male',
+      gender: 'female',
       phone: '+970599777888',
-      address: 'حي النصر، غزة، بناية 18',
+      address: 'حي تل الهوى، غزة، شارع النصر، بناية 18',
       location: { lat: 31.5298, lng: 34.4443 },
       organization_id: organizations[1].id,
-      marital_status: 'married',
-      economic_level: 'poor',
-      members_count: 5,
+      marital_status: 'widowed',
+      economic_level: 'very_poor',
+      members_count: 4,
       identity_status: 'verified',
       status: 'active',
       eligibility_status: 'eligible',
       total_packages: 35,
       is_head_of_family: true,
-      medical_conditions: ['ربو']
+      medical_conditions: ['أرملة شهيد']
     },
     {
       name: 'هدى علي الفرا',
       full_name: 'هدى علي محمد الفرا',
-      national_id: '930890123',
+      national_id: '930678901',
       date_of_birth: '1993-09-14',
       gender: 'female',
       phone: '+970599888999',
@@ -351,6 +532,46 @@ async function seedBeneficiaries() {
       status: 'active',
       eligibility_status: 'eligible',
       total_packages: 42,
+      is_head_of_family: true,
+      medical_conditions: []
+    },
+    {
+      name: 'طارق سعد الغول',
+      full_name: 'طارق سعد عبد الرحمن الغول',
+      national_id: '940789012',
+      date_of_birth: '1994-03-22',
+      gender: 'male',
+      phone: '+970599100200',
+      address: 'رفح، حي يبنا، شارع السلام، بناية 4',
+      location: { lat: 31.2912, lng: 34.2501 },
+      organization_id: organizations[3].id,
+      marital_status: 'single',
+      economic_level: 'poor',
+      members_count: 1,
+      identity_status: 'verified',
+      status: 'active',
+      eligibility_status: 'under_review',
+      total_packages: 12,
+      is_head_of_family: true,
+      medical_conditions: []
+    },
+    {
+      name: 'منى خليل شراب',
+      full_name: 'منى خليل محمد شراب',
+      national_id: '960890123',
+      date_of_birth: '1996-11-09',
+      gender: 'female',
+      phone: '+970599200300',
+      address: 'بيت لاهيا، شارع الفالوجا، بناية 11',
+      location: { lat: 31.5467, lng: 34.5012 },
+      organization_id: organizations[4].id,
+      marital_status: 'single',
+      economic_level: 'good',
+      members_count: 1,
+      identity_status: 'rejected',
+      status: 'suspended',
+      eligibility_status: 'rejected',
+      total_packages: 0,
       is_head_of_family: true,
       medical_conditions: []
     }
@@ -658,96 +879,67 @@ async function seedGeographicAreas() {
 async function seedPackages() {
   console.log('إضافة الطرود...');
 
-  const { data: beneficiaries } = await supabase.from('beneficiaries').select('id, organization_id').limit(8);
+  const { data: beneficiaries } = await supabase.from('beneficiaries').select('id, organization_id, status, identity_status').limit(18);
   const { data: organizations } = await supabase.from('organizations').select('id').limit(5);
 
   if (!beneficiaries || !organizations) return;
 
-  const packages = [
-    {
-      name: 'طرد غذائي شهري',
-      type: 'food',
-      description: 'طرد غذائي يحتوي على المواد الأساسية للشهر',
-      value: 150,
-      funder: 'الهلال الأحمر',
-      organization_id: organizations[0].id,
-      beneficiary_id: beneficiaries[0].id,
-      status: 'delivered',
-      delivered_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-    },
-    {
-      name: 'طرد طبي',
-      type: 'medical',
-      description: 'أدوية ومستلزمات طبية',
-      value: 80,
-      funder: 'الأونروا',
-      organization_id: organizations[1].id,
-      beneficiary_id: beneficiaries[1].id,
-      status: 'in_delivery'
-    },
-    {
-      name: 'طرد ملابس',
-      type: 'clothing',
-      description: 'ملابس شتوية للعائلة',
-      value: 120,
-      funder: 'الإغاثة الإسلامية',
-      organization_id: organizations[2].id,
-      beneficiary_id: beneficiaries[2].id,
-      status: 'assigned'
-    },
-    {
-      name: 'طرد نظافة',
-      type: 'hygiene',
-      description: 'مواد تنظيف ونظافة شخصية',
-      value: 60,
-      funder: 'الإغاثة الدولية',
-      organization_id: organizations[3].id,
-      beneficiary_id: beneficiaries[3].id,
-      status: 'delivered',
-      delivered_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
-    },
-    {
-      name: 'طرد طوارئ',
-      type: 'emergency',
-      description: 'مواد طارئة للإغاثة الفورية',
-      value: 200,
-      funder: 'الهداية الخيرية',
-      organization_id: organizations[4].id,
-      beneficiary_id: beneficiaries[4].id,
-      status: 'pending'
-    },
-    {
-      name: 'طرد غذائي كبير',
-      type: 'food',
-      description: 'طرد غذائي لعائلة كبيرة',
-      value: 250,
-      funder: 'الهلال الأحمر',
-      organization_id: organizations[0].id,
-      beneficiary_id: beneficiaries[5].id,
-      status: 'in_delivery'
-    },
-    {
-      name: 'طرد أطفال',
-      type: 'clothing',
-      description: 'ملابس ومستلزمات أطفال',
-      value: 100,
-      funder: 'الأونروا',
-      organization_id: organizations[1].id,
-      beneficiary_id: beneficiaries[6].id,
-      status: 'delivered',
-      delivered_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-    },
-    {
-      name: 'طرد شتوي',
-      type: 'emergency',
-      description: 'مستلزمات شتوية وبطانيات',
-      value: 180,
-      funder: 'الإغاثة الدولية',
-      organization_id: organizations[3].id,
-      beneficiary_id: beneficiaries[7].id,
-      status: 'assigned'
+  const packages = [];
+
+  // المستفيدين الموثقين والنشطين - 2-5 طرود لكل منهم
+  const activeBeneficiaries = beneficiaries.filter(b => b.status === 'active' && b.identity_status === 'verified');
+  activeBeneficiaries.forEach((ben, i) => {
+    const packageCount = 2 + (i % 4); // 2-5 طرود
+    for (let j = 0; j < packageCount; j++) {
+      const daysPast = j * 7 + i * 2;
+      packages.push({
+        name: ['طرد غذائي', 'طرد طبي', 'طرد ملابس', 'طرد نظافة'][j % 4],
+        type: ['food', 'medical', 'clothing', 'hygiene'][j % 4],
+        description: `${['مواد غذائية أساسية', 'أدوية ومستلزمات طبية', 'ملابس للعائلة', 'مواد نظافة'][j % 4]}`,
+        value: [150, 80, 120, 60][j % 4],
+        funder: ['الهلال الأحمر', 'الأونروا', 'الإغاثة الإسلامية', 'الإغاثة الدولية'][i % 4],
+        organization_id: ben.organization_id,
+        beneficiary_id: ben.id,
+        status: j < 2 ? 'delivered' : (j === 2 ? 'in_delivery' : 'assigned'),
+        delivered_at: j < 2 ? new Date(Date.now() - daysPast * 24 * 60 * 60 * 1000).toISOString() : null
+      });
     }
-  ];
+  });
+
+  // المستفيدين قيد المراجعة - 1-2 طرود
+  const pendingBeneficiaries = beneficiaries.filter(b => b.status === 'pending');
+  pendingBeneficiaries.forEach((ben, i) => {
+    const packageCount = 1 + (i % 2);
+    for (let j = 0; j < packageCount; j++) {
+      packages.push({
+        name: 'طرد غذائي',
+        type: 'food',
+        description: 'مواد غذائية أساسية',
+        value: 150,
+        funder: 'الأونروا',
+        organization_id: ben.organization_id,
+        beneficiary_id: ben.id,
+        status: j === 0 ? 'pending' : 'assigned'
+      });
+    }
+  });
+
+  // المستفيدين الموقوفين - 0-1 طرد فاشل
+  const suspendedBeneficiaries = beneficiaries.filter(b => b.status === 'suspended');
+  suspendedBeneficiaries.forEach((ben, i) => {
+    if (i % 2 === 0) {
+      packages.push({
+        name: 'طرد غذائي',
+        type: 'food',
+        description: 'محاولة توصيل فاشلة',
+        value: 150,
+        funder: 'الإغاثة الدولية',
+        organization_id: ben.organization_id,
+        beneficiary_id: ben.id,
+        status: 'failed'
+      });
+    }
+  });
 
   const { error } = await supabase.from('packages').insert(packages);
 
@@ -913,24 +1105,46 @@ async function seedNotifications() {
 async function seedFeedback() {
   console.log('إضافة التقييمات...');
 
-  const { data: tasks } = await supabase.from('tasks').select('id, beneficiary_id, courier_id, package_id').eq('status', 'delivered').limit(3);
+  const { data: tasks } = await supabase.from('tasks').select('id, beneficiary_id, courier_id, package_id, status').limit(50);
   if (!tasks || tasks.length === 0) return;
 
-  const feedback = tasks.map(task => ({
-    beneficiary_id: task.beneficiary_id,
-    task_id: task.id,
-    courier_id: task.courier_id,
-    package_id: task.package_id,
-    rating: 4.5 + Math.random() * 0.5,
-    service_quality_rating: 4.3 + Math.random() * 0.7,
-    delivery_time_rating: 4.4 + Math.random() * 0.6,
-    package_condition_rating: 4.8 + Math.random() * 0.2,
-    courier_behavior_rating: 4.7 + Math.random() * 0.3,
-    comments: 'خدمة ممتازة، شكراً لكم',
-    would_recommend: true,
-    feedback_type: 'delivery',
-    status: 'reviewed'
-  }));
+  const deliveredTasks = tasks.filter(t => t.status === 'delivered');
+  const feedback = [];
+
+  const positiveComments = [
+    'خدمة ممتازة، شكراً لكم على جهودكم',
+    'المندوب محترم جداً والتوصيل سريع',
+    'الطرد وصل بحالة جيدة والخدمة رائعة',
+    'نشكركم على المساعدة، جزاكم الله خيراً',
+    'خدمة مميزة وسريعة، بارك الله فيكم'
+  ];
+
+  const negativeComments = [
+    'التوصيل تأخر قليلاً عن الموعد المحدد',
+    'بعض المواد كانت تالفة في الطرد',
+    'المندوب لم يتصل قبل الوصول',
+    'الطرد ناقص بعض العناصر'
+  ];
+
+  deliveredTasks.forEach((task, i) => {
+    const isPositive = i % 10 !== 9; // 90% تقييمات إيجابية، 10% سلبية
+
+    feedback.push({
+      beneficiary_id: task.beneficiary_id,
+      task_id: task.id,
+      courier_id: task.courier_id,
+      package_id: task.package_id,
+      rating: isPositive ? 4.0 + Math.random() * 1.0 : 2.5 + Math.random() * 1.5,
+      service_quality_rating: isPositive ? 4.0 + Math.random() * 1.0 : 2.5 + Math.random() * 1.5,
+      delivery_time_rating: isPositive ? 4.0 + Math.random() * 1.0 : 2.0 + Math.random() * 1.5,
+      package_condition_rating: isPositive ? 4.5 + Math.random() * 0.5 : 3.0 + Math.random() * 1.0,
+      courier_behavior_rating: isPositive ? 4.5 + Math.random() * 0.5 : 3.5 + Math.random() * 1.0,
+      comments: i % 3 === 0 ? (isPositive ? positiveComments[i % positiveComments.length] : negativeComments[i % negativeComments.length]) : null,
+      would_recommend: isPositive,
+      feedback_type: 'delivery',
+      status: 'reviewed'
+    });
+  });
 
   const { error } = await supabase.from('feedback').insert(feedback);
 
@@ -944,30 +1158,50 @@ async function seedFeedback() {
 async function seedEmergencyContacts() {
   console.log('إضافة جهات الاتصال الطارئة...');
 
-  const { data: beneficiaries } = await supabase.from('beneficiaries').select('id').limit(5);
+  const { data: beneficiaries } = await supabase.from('beneficiaries').select('id, name, identity_status').limit(18);
   if (!beneficiaries) return;
 
-  const contacts = beneficiaries.flatMap((ben, i) => [
-    {
+  const contacts = [];
+
+  // المستفيدين الموثقين - جهتي اتصال لكل منهم
+  const verifiedBeneficiaries = beneficiaries.filter(b => b.identity_status === 'verified');
+  verifiedBeneficiaries.forEach((ben, i) => {
+    contacts.push({
       beneficiary_id: ben.id,
-      name: `جهة اتصال ${i + 1} - أساسي`,
-      relationship: 'أخ',
-      phone: `+97059900${i}00${i}`,
+      name: `أحمد محمود - قريب ${ben.name.split(' ')[0]}`,
+      relationship: i % 2 === 0 ? 'أخ' : 'ابن عم',
+      phone: `+970599800${String(i).padStart(3, '0')}`,
       is_primary: true,
       can_receive_packages: true,
       verified: true,
-      verified_date: new Date().toISOString().split('T')[0]
-    },
-    {
+      verified_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    });
+
+    contacts.push({
       beneficiary_id: ben.id,
-      name: `جهة اتصال ${i + 1} - بديل`,
-      relationship: 'أخت',
-      phone: `+97059900${i}11${i}`,
+      name: `فاطمة علي - قريبة ${ben.name.split(' ')[0]}`,
+      relationship: i % 2 === 0 ? 'أخت' : 'بنت عم',
+      phone: `+970599801${String(i).padStart(3, '0')}`,
       is_primary: false,
+      can_receive_packages: true,
+      verified: true,
+      verified_date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    });
+  });
+
+  // المستفيدين قيد المراجعة - جهة اتصال واحدة
+  const pendingBeneficiaries = beneficiaries.filter(b => b.identity_status === 'pending');
+  pendingBeneficiaries.forEach((ben, i) => {
+    contacts.push({
+      beneficiary_id: ben.id,
+      name: `خالد سعيد - قريب ${ben.name.split(' ')[0]}`,
+      relationship: 'أخ',
+      phone: `+970599802${String(i).padStart(3, '0')}`,
+      is_primary: true,
       can_receive_packages: false,
       verified: false
-    }
-  ]);
+    });
+  });
 
   const { error } = await supabase.from('emergency_contacts').insert(contacts);
 

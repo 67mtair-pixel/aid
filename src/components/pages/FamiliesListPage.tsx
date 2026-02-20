@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Search, Plus, Eye, Edit, Phone, MapPin, Users, Package, TrendingUp, RefreshCw, UserCheck, Baby, Activity, Calendar } from 'lucide-react';
-import { type Family, type Beneficiary } from '../../data/mockData';
+import { type Family, type Beneficiary, getBeneficiariesByFamily } from '../../data/mockData';
 import { useErrorLogger } from '../../utils/errorLogger';
 import { Button, Card, Badge, Modal, Input } from '../ui';
 import { familiesService } from '../../services/supabaseService';
