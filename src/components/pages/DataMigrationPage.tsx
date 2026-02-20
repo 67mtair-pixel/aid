@@ -1,19 +1,20 @@
-import { useState } from 'react';
-import Button from '../ui/Button';
+import React, { useState } from 'react';
+import { Database, Upload, Check, AlertCircle, Loader } from 'lucide-react';
 import Card from '../ui/Card';
-import { seedDatabase } from '../../scripts/seedDatabase';
+import Button from '../ui/Button';
+import { seedMockData } from '../../scripts/seedMockData';
 
 export default function DataMigrationPage() {
-  const [running, setRunning] = useState(false);
-  const [completed, setCompleted] = useState(false);
-  const [logs, setLogs] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [logs, setLogs] = useState<string[]>([]);
 
-  const handleMigrate = async () => {
-    setRunning(true);
+  const handleSeedData = async () => {
+    setLoading(true);
+    setSuccess(false);
     setError(null);
     setLogs([]);
-    setCompleted(false);
 
     const originalLog = console.log;
     const originalError = console.error;
@@ -29,124 +30,172 @@ export default function DataMigrationPage() {
     };
 
     try {
-      const result = await seedDatabase();
-      if (result.success) {
-        setCompleted(true);
-      } else {
-        setError('فشل في نقل بعض البيانات');
-      }
-    } catch (err: any) {
-      setError(err.message || 'فشل في نقل البيانات');
-      console.error('Migration error:', err);
+      await seedMockData();
+      setSuccess(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'حدث خطأ غير متوقع');
     } finally {
       console.log = originalLog;
       console.error = originalError;
-      setRunning(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8" dir="rtl">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6" dir="rtl">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">نقل البيانات إلى Supabase</h1>
-          <p className="text-slate-600">نقل جميع البيانات الوهمية إلى قاعدة البيانات الحقيقية</p>
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+            إدارة البيانات الوهمية
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            إضافة بيانات تجريبية شاملة لاختبار النظام
+          </p>
         </div>
 
-        <Card className="mb-6 p-6">
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold text-slate-800 mb-2">معلومات مهمة</h2>
-            <ul className="list-disc list-inside text-slate-600 space-y-1">
-              <li>سيتم نقل جميع البيانات من ملف mockData.ts</li>
-              <li>إذا كانت البيانات موجودة بالفعل، سيتم تخطيها</li>
-              <li>ستتم معالجة البيانات بالترتيب الصحيح حسب التبعيات</li>
-              <li>يمكنك تشغيل هذه العملية مرات متعددة بأمان</li>
-            </ul>
+        <Card className="p-8 dark:bg-gray-800">
+          <div className="text-center mb-8">
+            <Database className="w-20 h-20 mx-auto mb-4 text-blue-600" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              إضافة بيانات وهمية للنظام
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              سيتم إضافة بيانات تجريبية شاملة تشمل:
+            </p>
           </div>
 
-          <Button
-            onClick={handleMigrate}
-            disabled={running}
-            className="w-full"
-          >
-            {running ? 'جاري النقل...' : 'بدء عملية النقل'}
-          </Button>
-        </Card>
-
-        {running && (
-          <Card className="p-6 mb-6">
-            <div className="flex items-center justify-center space-x-2 space-x-reverse">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="text-lg text-slate-700">جاري نقل البيانات...</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="p-4 bg-blue-50 dark:bg-gray-700 rounded-lg">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">المؤسسات والعائلات</h3>
+              <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• 5 مؤسسات إنسانية</li>
+                <li>• 5 عائلات</li>
+                <li>• 8 مستفيدين</li>
+              </ul>
             </div>
-          </Card>
-        )}
 
-        {error && (
-          <Card className="p-6 mb-6 bg-red-50 border-red-200">
-            <div className="flex items-start space-x-3 space-x-reverse">
-              <svg className="w-6 h-6 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div>
-                <h3 className="text-lg font-semibold text-red-800 mb-1">خطأ في النقل</h3>
-                <p className="text-red-700">{error}</p>
-              </div>
+            <div className="p-4 bg-green-50 dark:bg-gray-700 rounded-lg">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">المندوبين والتوصيل</h3>
+              <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• 6 مندوبين</li>
+                <li>• 8 طرود</li>
+                <li>• 8 مهام توصيل</li>
+              </ul>
             </div>
-          </Card>
-        )}
 
-        {logs.length > 0 && (
-          <Card className="p-6 mb-6">
-            <h3 className="text-lg font-semibold text-slate-800 mb-4">سجل النقل</h3>
-            <div className="bg-slate-900 rounded-lg p-4 max-h-96 overflow-y-auto">
-              <div className="font-mono text-sm space-y-1">
-                {logs.map((log, index) => (
-                  <div
-                    key={index}
-                    className={`${
-                      log.includes('✅') ? 'text-green-400' :
-                      log.includes('❌') ? 'text-red-400' :
-                      log.includes('🌱') ? 'text-blue-400' :
-                      'text-slate-300'
-                    }`}
-                  >
-                    {log}
-                  </div>
-                ))}
-              </div>
+            <div className="p-4 bg-purple-50 dark:bg-gray-700 rounded-lg">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">المخزون والمراكز</h3>
+              <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• 3 مراكز توزيع</li>
+                <li>• 6 عناصر مخزون</li>
+                <li>• 4 مناطق جغرافية</li>
+              </ul>
             </div>
-          </Card>
-        )}
 
-        {completed && (
-          <div className="space-y-6">
-            <Card className="p-6 bg-green-50 border-green-200">
-              <div className="flex items-center space-x-3 space-x-reverse">
-                <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+            <div className="p-4 bg-orange-50 dark:bg-gray-700 rounded-lg">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">التنبيهات والإشعارات</h3>
+              <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• 6 مواقع مندوبين</li>
+                <li>• 3 تنبيهات</li>
+                <li>• 3 إشعارات</li>
+                <li>• تقييمات وجهات اتصال</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {success && (
+              <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-center gap-3">
+                <Check className="w-6 h-6 text-green-600 dark:text-green-400" />
                 <div>
-                  <h3 className="text-xl font-bold text-green-800">اكتملت عملية النقل بنجاح!</h3>
-                  <p className="text-green-700">تم نقل جميع البيانات إلى قاعدة البيانات</p>
+                  <h4 className="font-semibold text-green-900 dark:text-green-100">
+                    تمت الإضافة بنجاح!
+                  </h4>
+                  <p className="text-sm text-green-700 dark:text-green-300">
+                    تم إضافة جميع البيانات الوهمية بنجاح. يمكنك الآن تصفح الصفحات المختلفة.
+                  </p>
                 </div>
               </div>
-            </Card>
+            )}
 
-            <Card className="p-6 bg-blue-50 border-blue-200">
-              <h3 className="text-lg font-semibold text-blue-800 mb-2">الخطوة التالية</h3>
-              <p className="text-blue-700 mb-4">
-                الآن يمكنك العودة إلى الصفحة الرئيسية وستجد جميع البيانات محملة من قاعدة البيانات الحقيقية بدلاً من البيانات الوهمية.
-              </p>
-              <Button
-                onClick={() => window.location.reload()}
-                variant="primary"
-              >
-                إعادة تحميل الصفحة
-              </Button>
-            </Card>
+            {error && (
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-3">
+                <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+                <div>
+                  <h4 className="font-semibold text-red-900 dark:text-red-100">حدث خطأ</h4>
+                  <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+                </div>
+              </div>
+            )}
+
+            {logs.length > 0 && (
+              <div className="bg-gray-900 dark:bg-black rounded-lg p-4 max-h-96 overflow-y-auto">
+                <div className="font-mono text-sm space-y-1">
+                  {logs.map((log, index) => (
+                    <div
+                      key={index}
+                      className={`${
+                        log.includes('✅') || log.includes('✓') ? 'text-green-400' :
+                        log.includes('❌') ? 'text-red-400' :
+                        log.includes('🌱') ? 'text-blue-400' :
+                        'text-gray-300'
+                      }`}
+                    >
+                      {log}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <Button
+              onClick={handleSeedData}
+              disabled={loading}
+              className="w-full"
+              size="lg"
+            >
+              {loading ? (
+                <>
+                  <Loader className="w-5 h-5 ml-2 animate-spin" />
+                  جارٍ إضافة البيانات...
+                </>
+              ) : (
+                <>
+                  <Upload className="w-5 h-5 ml-2" />
+                  إضافة البيانات الوهمية
+                </>
+              )}
+            </Button>
+
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+              ملاحظة: يمكن تشغيل هذه العملية عدة مرات بأمان. البيانات المكررة سيتم تحديثها تلقائياً.
+            </p>
           </div>
-        )}
+        </Card>
+
+        <Card className="mt-6 p-6 dark:bg-gray-800">
+          <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">
+            ملاحظات مهمة
+          </h3>
+          <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <li className="flex items-start gap-2">
+              <span className="text-blue-600 dark:text-blue-400 font-bold">•</span>
+              <span>هذه البيانات للاختبار فقط ولا تمثل بيانات حقيقية</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-600 dark:text-blue-400 font-bold">•</span>
+              <span>يمكنك حذف البيانات من لوحة Supabase Dashboard إذا لزم الأمر</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-600 dark:text-blue-400 font-bold">•</span>
+              <span>تأكد من وجود اتصال بقاعدة البيانات قبل البدء</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-600 dark:text-blue-400 font-bold">•</span>
+              <span>قد تستغرق العملية بضع ثوان حسب سرعة الاتصال</span>
+            </li>
+          </ul>
+        </Card>
       </div>
     </div>
   );
