@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { UserCheck, CheckCircle, Clock, AlertTriangle, Users, Shield, Camera, FileText, Upload, RefreshCw, Search, Filter, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, Minus, Star } from 'lucide-react';
+import { UserCheck, CheckCircle, Clock, AlertTriangle, Users, Shield, Camera, FileText, Upload, RefreshCw, Search, Filter, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, Minus, Sparkles } from 'lucide-react';
 import BeneficiaryProfileModal from '../BeneficiaryProfileModal';
 import { Button, Card, Input, Badge, ConfirmationModal } from '../ui';
 import { useBeneficiaries } from '../../hooks/useBeneficiaries';
@@ -874,7 +874,7 @@ export default function StatusManagementPage({ onNavigateToIndividualSend }: Sta
 
           {filteredBeneficiaries.filter(b => (b.identity_status || b.identityStatus) === 'pending').length === 0 && (
             <div className="text-center py-8 text-gray-500">
-              <Star className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+              <Sparkles className="w-12 h-12 mx-auto mb-2 text-gray-300" />
               <p>لا توجد حسابات تحتاج توثيق حالياً</p>
               <p className="text-sm">جميع المستفيدين تم التحقق من هويتهم</p>
             </div>

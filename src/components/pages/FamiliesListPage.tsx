@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Search, Plus, Eye, Edit, Phone, MapPin, Users, Package, TrendingUp, RefreshCw, UserCheck, Baby, Activity, Calendar } from 'lucide-react';
-import { type Family, type Beneficiary, getBeneficiariesByFamily } from '../../data/mockData';
+import { type Family, type Beneficiary } from '../../data/mockData';
 import { useErrorLogger } from '../../utils/errorLogger';
 import { Button, Card, Badge, Modal, Input } from '../ui';
-import { familiesService } from '../../services/supabaseService';
+import { familiesService, beneficiariesService } from '../../services/supabaseService';
 
 export default function FamiliesListPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -310,10 +310,19 @@ function FamilyModal({ isOpen, onClose, family, type, onSave }: FamilyModalProps
   const [familyMembers, setFamilyMembers] = useState<Beneficiary[]>([]);
 
   useEffect(() => {
-    if (family) {
-      const members = getBeneficiariesByFamily(family.id);
-      setFamilyMembers(members);
-    }
+    const loadFamilyMembers = async () => {
+      if (family) {
+        try {
+          const allBeneficiaries = await beneficiariesService.getAll();
+          const members = allBeneficiaries.filter((b: any) => b.family_id === family.id);
+          setFamilyMembers(members as any);
+        } catch (error) {
+          console.error('Error loading family members:', error);
+          setFamilyMembers([]);
+        }
+      }
+    };
+    loadFamilyMembers();
   }, [family]);
 
   const handleSubmit = async (e: React.FormEvent) => {
