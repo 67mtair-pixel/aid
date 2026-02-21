@@ -20,7 +20,6 @@ import IndividualSendPage from './pages/IndividualSendPage';
 import TrackingPage from './pages/TrackingPage';
 import DistributionReportsPage from './pages/DistributionReportsPage';
 import OrganizationsListPage from './pages/OrganizationsListPage';
-import TestSupabasePage from './pages/TestSupabasePage';
 import TasksManagementPage from './pages/TasksManagementPage';
 import ComprehensiveReportsPage from './pages/ComprehensiveReportsPage';
 import SystemSettingsPage from './pages/SystemSettingsPage';
@@ -30,7 +29,6 @@ import MessagesSettingsPage from './pages/MessagesSettingsPage';
 import CouriersManagementPage from './pages/CouriersManagementPage';
 import FamiliesListPage from './pages/FamiliesListPage';
 import AuditLogPage from './pages/AuditLogPage';
-import DataMigrationPage from './pages/DataMigrationPage';
 
 interface NavItem {
   id: string;
@@ -52,7 +50,7 @@ export default function AdminDashboard({ activeTab, setActiveTab }: AdminDashboa
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'add' | 'edit' | 'view'>('add');
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [openMenus, setOpenMenus] = useState<string[]>(['beneficiaries', 'packages', 'organizations-families', 'distribution', 'reports-alerts', 'settings', 'development']);
+  const [openMenus, setOpenMenus] = useState<string[]>(['beneficiaries', 'packages', 'organizations-families', 'distribution', 'reports-alerts', 'settings']);
   const [beneficiaryIdForIndividualSend, setBeneficiaryIdForIndividualSend] = useState<string | null>(null);
 
   // State for Supabase data
@@ -184,15 +182,6 @@ export default function AdminDashboard({ activeTab, setActiveTab }: AdminDashboa
         { id: 'system', name: 'إعدادات النظام', icon: Settings },
         { id: 'backup', name: 'النسخ الاحتياطي', icon: Database },
         { id: 'audit', name: 'سجل المراجعة', icon: Activity }
-      ]
-    },
-    {
-      id: 'development',
-      name: 'أدوات التطوير',
-      icon: Settings,
-      children: [
-        { id: 'test-supabase', name: 'اختبار Supabase', icon: Database },
-        { id: 'data-migration', name: 'نقل البيانات', icon: Database }
       ]
     }
   ];
@@ -600,28 +589,6 @@ export default function AdminDashboard({ activeTab, setActiveTab }: AdminDashboa
       );
     }
 
-    // Test Supabase page
-    if (activeTab === 'test-supabase') {
-      return (
-        <div className="space-y-6">
-          <div className="flex items-center space-x-4 space-x-reverse">
-            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-              <IconComponent className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900">{pageInfo.name}</h2>
-              <p className="text-gray-600 mt-1">اختبار الاتصال وجلب البيانات من Supabase</p>
-            </div>
-          </div>
-          <TestSupabasePage />
-        </div>
-      );
-    }
-
-    // Data Migration page
-    if (activeTab === 'data-migration') {
-      return <DataMigrationPage />;
-    }
 
     // Overview Tab
     if (activeTab === 'overview') {
